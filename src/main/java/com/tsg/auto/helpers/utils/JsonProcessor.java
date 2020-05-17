@@ -21,7 +21,7 @@ public class JsonProcessor {
     public List<String> getAllJsonPaths(String name) throws IOException {
         String jsonString = fileProcessor.readFile(name);
         Map<String, Object> flattenJson = JsonFlattener.flattenAsMap(jsonString);
-        return flattenJson.keySet().stream().collect(Collectors.toList());
+        return flattenJson.keySet().stream().map(key -> "$."+key).collect(Collectors.toList());
     }
 
     public List<String> getNormalizedJsonPaths(String name)throws Exception {
@@ -36,7 +36,7 @@ public class JsonProcessor {
                 setOfAllKeys.add(key);
             }
         });
-        return setOfAllKeys.stream().collect(Collectors.toList());
+        return setOfAllKeys.stream().map(key -> "$."+key).collect(Collectors.toList());
     }
 
     private boolean isArrayPath(String originalJsonPath){
