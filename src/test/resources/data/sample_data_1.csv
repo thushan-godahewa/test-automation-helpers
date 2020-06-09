@@ -1,0 +1,4 @@
+JsonPath,ValueToSet
+$.id,1234567890
+$.addresses[0].postcode,4214
+"$.addresses[0].postcode:3104,$.addresses[1].address_line1:65 Long Highway",TEST

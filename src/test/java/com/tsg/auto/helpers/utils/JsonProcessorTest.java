@@ -3,8 +3,13 @@ package com.tsg.auto.helpers.utils;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.tsg.auto.helpers.TestConfig;
+import com.tsg.auto.helpers.model.CsvAggregator;
+import com.tsg.auto.helpers.model.CsvData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -61,7 +66,7 @@ public class JsonProcessorTest {
         DocumentContext documentContext = JsonPath.parse(jsonString);
         documentContext.set(PATH_ID, "1234567890");
         documentContext.set(PATH_LAST_NAME, "Coming");
-        documentContext.set(PATH_ADDRESS0_POSTCOSE, 4214);
+        documentContext.set(PATH_ADDRESS0_POSTCOSE, Integer.valueOf(4214));
         documentContext.set(PATH_ADDRESS1_ADDRESS_LINE1, "Lot. 03");
         documentContext.set(PATH_BUSINESS_DETAILS_PRODUCT1, "pharmaceutical");
         assertThat(documentContext.read(PATH_ID, String.class)).isEqualTo("1234567890");
@@ -69,5 +74,23 @@ public class JsonProcessorTest {
         assertThat(documentContext.read(PATH_ADDRESS0_POSTCOSE, Integer.class)).isEqualTo(4214);
         assertThat(documentContext.read(PATH_ADDRESS1_ADDRESS_LINE1, String.class)).isEqualTo("Lot. 03");
         assertThat(documentContext.read(PATH_BUSINESS_DETAILS_PRODUCT1, String.class)).isEqualTo("pharmaceutical");
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/data/sample_data_1.csv", numLinesToSkip = 1)
+    public void updateJsonUsingJsonPathsFromCsv(String jsonPath, Object valueToSet) throws Exception{
+        String jsonString = fileProcessor.readFile(JSON_SAMPLE_1);
+        DocumentContext documentContext = JsonPath.parse(jsonString);
+        documentContext.set(jsonPath, valueToSet);
+        assertThat(documentContext.read(jsonPath, Object.class)).isEqualTo(valueToSet);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/data/sample_data_2.csv", numLinesToSkip = 1)
+    public void updateJsonUsingJsonPathsFromCsvCustomAggregator(@AggregateWith(CsvAggregator.class) CsvData csvData) throws Exception{
+        String jsonString = fileProcessor.readFile(JSON_SAMPLE_1);
+        DocumentContext documentContext = JsonPath.parse(jsonString);
+        //documentContext.set(jsonPath, valueToSet);
+        //assertThat(documentContext.read(jsonPath, Object.class)).isEqualTo(valueToSet);
     }
 }
