@@ -1,5 +1,6 @@
 # test-automation-helpers
 How to Build?
+
 If using maven:
   ./mvnw clean install -DskipTests
 If using gradle
