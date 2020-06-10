@@ -3,9 +3,15 @@
  */
 
 plugins {
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
-    id 'maven-publish'
 }
+
+group = 'com.tsg.auto'
+version = '0.0.1-SNAPSHOT'
+description = 'test-automation-helpers'
+sourceCompatibility = '1.8'
 
 repositories {
     mavenLocal()
@@ -15,6 +21,10 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
     implementation 'org.springframework.boot:spring-boot-starter:2.2.6.RELEASE'
     implementation 'org.springframework.shell:spring-shell-starter:2.0.1.RELEASE'
     implementation 'com.jayway.jsonpath:json-path:2.4.0'
@@ -26,19 +36,6 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.16.1'
 }
 
-group = 'com.tsg.auto'
-version = '0.0.1-SNAPSHOT'
-description = 'test-automation-helpers'
-sourceCompatibility = '1.8'
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+test {
+    useJUnitPlatform()
 }
